@@ -19,7 +19,8 @@ class ClimbsTableSeeder extends Seeder
             'gear_needed' => '8 quickdraws',
             'rating' => '5.10a',
             'added_by' => 'Jodi',
-            'location' => 'Salt Lake'
+            'location' => 'Salt Lake',
+            'public' => 1
         ]);
         $route->save();
 
@@ -31,7 +32,9 @@ class ClimbsTableSeeder extends Seeder
             'gear_needed' => '8 quickdraws',
             'rating' => '5.10a',
             'added_by' => 'Test Dummy',
-            'location' => 'Logan Canyon'
+            'location' => 'Logan Canyon',
+            'public' => 0
+
         ]);
         $route->save();
     }

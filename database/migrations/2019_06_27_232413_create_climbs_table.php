@@ -24,6 +24,7 @@ class CreateClimbsTable extends Migration
             $table->text('gear_needed');
             $table->string('location', 255);
             $table->string( 'added_by', 255);
+            $table->tinyInteger('public');
         });
     }
 
@@ -34,6 +35,6 @@ class CreateClimbsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('climbing_routes');
+        Schema::dropIfExists('climbs');
     }
 }
