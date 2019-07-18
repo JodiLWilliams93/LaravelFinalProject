@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Climb;
+use Gate;
 
 class ClimbController extends Controller
 {
@@ -56,6 +57,7 @@ class ClimbController extends Controller
         $gear_needed = $request->input( 'gear_needed');
         $added_by = $request->input( 'added_by');
         $location = $request->input( 'location');
+        $public = $request->input( 'public');
         
 
         $climb = new Climb([
@@ -67,6 +69,7 @@ class ClimbController extends Controller
             'gear_needed' => $gear_needed,
             'location' => $location,
             'added_by' => $added_by,
+            'public' => $public
         ]);
 
         if ( $climb->save()) {
@@ -124,6 +127,11 @@ class ClimbController extends Controller
     public function update(Request $request, $id)
     {
         $climb = Climb::where('id', $id)->first();
+
+        // if (Gate::denies('manipulate-climb', $climb)) {
+        //     $response = ['msg' => 'User is not authorized to edit climb.'];
+        //     return response()->json($response, 404);
+        // }
         $climb->name = $request->input('name') ?? $climb->name;
         $climb->length = $request->input('length') ?? $climb->length;
         $climb->description = $request->input('description') ?? $climb->description;
@@ -145,6 +153,7 @@ class ClimbController extends Controller
             $response = ['msg' => $climb->name . ' updated', 'climb' => $climb];
             return response()->json($response, 201);
         }
+
 
         $response = ['msg' => 'An error occured.'];
         return response()->json($response, 404);
