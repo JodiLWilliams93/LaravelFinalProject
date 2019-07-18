@@ -63,4 +63,13 @@ Route::group(['prefix' => 'api/v1'], function () {
         'only' => ['store', 'destroy']
     ]);
 
+    Route::post('register', [
+        'uses' => 'AuthController@store'
+    ]);
+
+    Route::post('user/signin', [
+        'uses' => 'AuthController@signin'
+    ]);
 });
+
+
