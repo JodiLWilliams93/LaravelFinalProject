@@ -19,9 +19,9 @@ class CreateClimbsTable extends Migration
             $table->string('name', 255);
             $table->string('rating', 25);
             $table->text('description');
-            $table->integer('length');
+            $table->integer('length')->nullable();
             $table->enum('type', ['Trad', 'Sport', 'Top Rope', 'Boulder']);
-            $table->text('gear_needed');
+            $table->text('gear_needed')->nullable();
             $table->string('location', 255);
             $table->string( 'added_by', 255);
             $table->tinyInteger('public');
