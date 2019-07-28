@@ -24,6 +24,17 @@ Route::prefix('admin')->group(function() {
         'uses' => 'AdminController@getAdminIndex',
         'as' => 'admin.index'
     ]);
+    Route::get('create', [
+        'uses' => 'AdminController@getAdminCreate',
+        'as' => 'admin.create'
+    ]);
+    Route::post('create', [
+        'uses' => 'AdminController@postAdminCreate',
+        'as' => 'admin.create'
+    ]);
+    Route::get('manage', function() {
+        return view('auth.manage');
+    })->name('auth.manage');
     Route::get('climb/{id}', [
         'uses' => 'AdminController@getAdminClimb',
         'as' => 'admin.climb'
@@ -53,23 +64,5 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(['prefix' => 'api/v1'], function () {
-
-    Route::resource('climbs', 'ClimbController', [
-        'except' => ['edit', 'create']
-    ]);
-
-    Route::resource('climbs/registration', 'RegistrationController', [
-        'only' => ['store', 'destroy']
-    ]);
-
-    Route::post('register', [
-        'uses' => 'AuthController@store'
-    ]);
-
-    Route::post('user/signin', [
-        'uses' => 'AuthController@signin'
-    ]);
-});
 
 
