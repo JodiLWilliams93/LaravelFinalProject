@@ -12,7 +12,7 @@ class Climb extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'rating', 'description', 'type', 'location', 'added_by', 'gear_needed', 'length'
+        'name', 'rating', 'description', 'type', 'location', 'added_by', 'gear_needed', 'length', 'public'
     ];
 
     public function users()
