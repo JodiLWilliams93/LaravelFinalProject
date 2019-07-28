@@ -27,6 +27,12 @@
         @include('partials.navigation')
         <main class="py-4">
             <div class="container">
+                @if (session('error'))
+                <div class="alert alert-warning">{{ session('error') }}</div>
+                @endif
+                @if (session('message'))
+                <div class="alert alert-info">{{ Session::get('message') }}</div>
+                @endif
                 @yield('content')
             </div>
         </main>
