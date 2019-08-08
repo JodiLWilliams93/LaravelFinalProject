@@ -59,7 +59,7 @@ class ClimbController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|max:255',
-            'description' => 'required|max:255',
+            'description' => 'required',
             'length' => 'nullable|integer',
             'rating' => 'required|string',
             'type' => ['required', Rule::in(['Top Rope', 'Trad', 'Sport', 'Boulder'])],
@@ -120,7 +120,10 @@ class ClimbController extends Controller
      */
     public function show($id)
     {
-        $climb = Climb::where('id', $id)->firstOrFail();
+        if (!$climb = Climb::where('id', $id)->first()) {
+            return response()->json(['msg' => 'Climb not found. Check URL and try again.'], 404);
+
+        }
         $climb->view_climb = [
             'href' => '/api/v1/climbs/' . $climb->id,
             'method' => 'GET'
@@ -143,7 +146,6 @@ class ClimbController extends Controller
     {
         $this->validate($request, [
             'name' => 'max:255',
-            'description' => 'max:255',
             'length' => 'nullable|integer',
             'rating' => 'string',
             'type' => Rule::in(['Top Rope', 'Trad', 'Sport', 'Boulder']),
@@ -158,46 +160,51 @@ class ClimbController extends Controller
             
         } catch (JWTException $e) {
 
-            return response()->json(['error' => 'User not found'], 401);
+            return response()->json(['msg' => 'User not found'], 401);
 
         }
                 
         
-        $climb = Climb::where('id', $id)->first();
+        if (!$climb = Climb::where('id', $id)->first()) {
+            return response()->json(['msg' => 'Climb not found. Check URL and try again.'], 404);
 
-
-        if ($user->email == $climb->added_by || $climb->public) {
-
-            $climb->name = $request->input('name') ?? $climb->name;
-            $climb->length = $request->input('length') ?? $climb->length;
-            $climb->description = $request->input('description') ?? $climb->description;
-            $climb->rating = $request->input('rating') ?? $climb->rating;
-            $climb->gear_needed = $request->input('gear_needed') ?? $climb->gear_needed;
-            $climb->type = $request->input('type') ?? $climb->type;
-            $climb->location = $request->input('location') ?? $climb->location;
-            $climb->added_by = $user->email ?? $climb->added_by;
-    
-            if ($climb->save()) {
-    
-                $climb->view_climb = [
-                    'href' => '/api/v1/climbs/' . $climb->id,
-                    'method' => 'GET'
-                ];
-
-                $response = ['msg' => 'The climb "' . $climb->name . '" was updated', 'climb' => $climb];
-                return response()->json($response, 201);
-            
-            } else {
-             
-                $response = ['msg' => 'An error occured.'];
-                return response()->json($response, 400);
-            } 
         } else {
-            $response = ['msg' => 'User does not have sufficient permissions to edit "' . $climb->name . '"'];
-            return response()->json($response, 403);        
+
+            
+            
+            if ($user->email == $climb->added_by || $climb->public) {
+                
+                $climb->name = $request->input('name') ?? $climb->name;
+                $climb->length = $request->input('length') ?? $climb->length;
+                $climb->description = $request->input('description') ?? $climb->description;
+                $climb->rating = $request->input('rating') ?? $climb->rating;
+                $climb->gear_needed = $request->input('gear_needed') ?? $climb->gear_needed;
+                $climb->type = $request->input('type') ?? $climb->type;
+                $climb->location = $request->input('location') ?? $climb->location;
+                $climb->added_by = $user->email ?? $climb->added_by;
+        
+                if ($climb->save()) {
+        
+                    $climb->view_climb = [
+                        'href' => '/api/v1/climbs/' . $climb->id,
+                        'method' => 'GET'
+                    ];
+                    
+                    $response = ['msg' => 'The climb "' . $climb->name . '" was updated', 'climb' => $climb];
+                    return response()->json($response, 201);
+                    
+                } else {
+                
+                    $response = ['msg' => 'An error occured.'];
+                    return response()->json($response, 400);
+                } 
+            } else {
+                $response = ['msg' => 'User does not have sufficient permissions to edit "' . $climb->name . '"'];
+                return response()->json($response, 403);        
+            }
         }
     }
-
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -214,7 +221,9 @@ class ClimbController extends Controller
             return response()->json(['msg' => 'User not found'], 401);
         }
 
-        $climb = Climb::where('id', $id)->firstOrFail();
+        if (!$climb = Climb::where('id', $id)->first()) {
+            return response()->json(['msg' => 'Climb not found. Check URL and try again.'], 404);
+        }
         if ($user->email == $climb->added_by && !$climb->public) {
             if ($climb->delete()) {
                 $msg = 'The climb "' . $climb->name . '" was deleted.'; 

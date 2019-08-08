@@ -29,7 +29,15 @@ class AdminController extends Controller
     public function getAdminClimb($id) {
         $client = new Client;
         $url = $this->base_url . $this->api_version . 'climbs/' . $id;
-        $response = $client->get($url);
+        try {
+
+            $response = $client->get($url);
+        } catch (ClientException $e) {
+
+            $body = json_decode($e->getResponse()->getBody(), true);
+            return redirect()->route('admin.index')->withError($body['msg'])->withInput();
+        }
+        
         $body = $response->getBody();
         $climb = json_decode($body, true);
         return view('admin.climb', ['climb'=> $climb['climb']]);
@@ -38,7 +46,16 @@ class AdminController extends Controller
     public function getAdminClimbEdit($id) {
         $client = new Client;
         $url = $this->base_url . $this->api_version . 'climbs/' . $id;
-        $response = $client->get($url);
+        try {
+
+            $response = $client->get($url);
+            
+        } catch (ClientException $e) {
+
+            $body = json_decode($e->getResponse()->getBody(), true);
+            return redirect()->route('admin.index')->withError($body['msg'])->withInput();
+        }
+
         $body = $response->getBody();
         $climb = json_decode($body, true);
         return view('admin.edit',['climb' => $climb['climb']]);
@@ -109,7 +126,7 @@ class AdminController extends Controller
             } catch (ClientException $e) {
 
                 $body = json_decode($e->getResponse()->getBody(), true);
-                return redirect()->route('admin.index')->withError($body['msg'])->withInput();
+                return redirect()->route('admin.index')->withError(implode(" ,", $body))->withInput();
 
             }
             
