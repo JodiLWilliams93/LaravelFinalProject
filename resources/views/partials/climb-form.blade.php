@@ -14,7 +14,7 @@
 </div>
 <!--end .form-group -->
 <div class="form-group">
-    <label for="length">Length (in meters)</label>
+    <label for="length">Length (in feet)</label>
     <input type="text" name="length" id="length" value="{{ old('length', $climb['length']) }}">
 </div>
 <!--end .form-group -->
