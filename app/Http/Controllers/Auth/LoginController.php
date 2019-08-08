@@ -48,7 +48,7 @@ class LoginController extends Controller
             $user->jwtoken = $token;
             $user->save();
         } else {
-            $user->jwtoken = 'no token created';
+            $user->jwtoken = 0;
             $user->save();
 
         }
