@@ -19,50 +19,56 @@ Route::get('/about', function() {
     return view('other.about');
 })->name('other.about');
 
-Route::prefix('admin')->group(function() {
+Route::group(['prefix' => 'admin'], function() {
     Route::get('/', [
         'uses' => 'AdminController@getAdminIndex',
         'as' => 'admin.index'
     ]);
     Route::get('create', [
         'uses' => 'AdminController@getAdminCreate',
-        'as' => 'admin.create'
-    ]);
+        'as' => 'admin.create',
+        ]);
     Route::post('create', [
         'uses' => 'AdminController@postAdminCreate',
-        'as' => 'admin.create'
-    ]);
-    Route::get('manage', function() {
-        return view('auth.manage');
-    })->name('auth.manage');
-    Route::get('climb/{id}', [
-        'uses' => 'AdminController@getAdminClimb',
-        'as' => 'admin.climb'
+        'as' => 'admin.create',
+        'middleware' => 'refreshToken'
+        ]);
+        
+        Route::get('climb/{id}', [
+            'uses' => 'AdminController@getAdminClimb',
+            'as' => 'admin.climb'
     ]);
     Route::get('climb/{id}/edit', [
         'uses' => 'AdminController@getAdminClimbEdit',
         'as' => 'admin.edit'
-    ]);
-    Route::post('climb/{id}/edit', [
+        ]);
+        Route::post('climb/{id}/edit', [
         'uses' => 'AdminController@postAdminClimbUpdate',
-        'as' => 'admin.update'
-    ]);
+        'as' => 'admin.update',
+        'middleware' => 'refreshToken'
+        ]);
     Route::get('climb/{id}/delete', [
         'uses' => 'AdminController@getAdminClimbDelete',
-        'as' => 'admin.delete'
+        'as' => 'admin.delete',
+        'middleware' => 'refreshToken'
     ]);
 
 });
 
 
-Route::get('/logout', function() {
-    Auth::logout();
-    return redirect(route('home.index'));
-});
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/logout', function() {
+    Auth::logout();
+    return redirect('/login');
+});
+
+Route::post('/logout', function() {
+    Auth::logout();
+    return redirect('/login');
+})->name('logout');
 
 
