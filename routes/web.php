@@ -11,9 +11,14 @@
 |
 */
 
-Route::get('/', function () {
-    return view('home.index');
-})->name('home.index');
+Route::get('/', [
+    'uses' => 'HomeController@index',
+    'as' => 'home.index'
+]);
+Route::get('home/climb/{id}', [
+    'uses' => 'HomeController@getClimb',
+    'as' => 'home.climb'
+]);
 
 Route::get('/about', function() {
     return view('other.about');
