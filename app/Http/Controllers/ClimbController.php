@@ -64,9 +64,8 @@ class ClimbController extends Controller
             'rating' => 'required|string',
             'type' => ['required', Rule::in(['Top Rope', 'Trad', 'Sport', 'Boulder'])],
             'gear_needed' => 'nullable|string',
-            'added_by' => 'string',
-            'location' => 'string',
-            'public' => Rule::in(['1', '0'])
+            'location' => 'required|string',
+            'public' => ['required', Rule::in(['1', '0'])]
         ]);
 
         
